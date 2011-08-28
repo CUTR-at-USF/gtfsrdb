@@ -41,18 +41,18 @@ class TripUpdate(Base):
 
     # This replaces the TripDescriptor message
     # TODO: figure out the relations
-    trip_id = Column(String)
-    route_id = Column(String)
-    trip_start_time = Column(String)
-    trip_start_date = Column(String)
+    trip_id = Column(String(10))
+    route_id = Column(String(10))
+    trip_start_time = Column(String(8))
+    trip_start_date = Column(String(10))
     # Put in the string value not the enum
     # TODO: add a domain
-    schedule_relationship = Column(String)
+    schedule_relationship = Column(String(9))
 
     # Collapsed VehicleDescriptor
-    vehicle_id = Column(String)
-    vehicle_label = Column(String)
-    vehicle_license_plate = Column(String)
+    vehicle_id = Column(String(10))
+    vehicle_label = Column(String(15))
+    vehicle_license_plate = Column(String(10))
 
     # moved from the header, and reformatted as datetime
     timestamp = Column(DateTime)
@@ -65,7 +65,7 @@ class StopTimeUpdate(Base):
 
     # TODO: Fill one from the other
     stop_sequence = Column(Integer)
-    stop_id = Column(String)
+    stop_id = Column(String(10))
 
     # Collapsed StopTimeEvent
     arrival_delay = Column(Integer)
@@ -78,7 +78,7 @@ class StopTimeUpdate(Base):
     departure_uncertainty = Column(Integer)
 
     # TODO: Add domain
-    schedule_relationship = Column(String)
+    schedule_relationship = Column(String(9))
 
     # Link it to the TripUpdate
     trip_update_id = Column(Integer, ForeignKey('trip_updates.oid'))
@@ -95,23 +95,23 @@ class Alert(Base):
     end = Column(Integer)
 
     # Collapsed EntitySelector
-    agency_id = Column(String)
-    route_id = Column(String)
+    agency_id = Column(String(15))
+    route_id = Column(String(10))
     route_type = Column(Integer)
-    stop_id = Column(String)    
+    stop_id = Column(String(10))    
 
     # Collapsed TripDescriptor
-    trip_id = Column(String)
-    route_id = Column(String)
-    trip_start_time = Column(String)
-    trip_start_date = Column(String)
+    trip_id = Column(String(10))
+    route_id = Column(String(10))
+    trip_start_time = Column(String(8))
+    trip_start_date = Column(String(10))
     
     # Add domain
-    cause = Column(String)
-    effect = Column(String)
+    cause = Column(String(20))
+    effect = Column(String(20))
 
-    url = Column(String)
-    header_text = Column(String)
-    description_text = Column(String)
+    url = Column(String(300))
+    header_text = Column(String(80))
+    description_text = Column(String(4000))
 
 # TODO: Add vehicle positioning
