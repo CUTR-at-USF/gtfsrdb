@@ -57,7 +57,7 @@ class TripUpdate(Base):
     StopTimeUpdates = relationship('StopTimeUpdate', backref='TripUpdate')
     
 class StopTimeUpdate(Base):
-    __tablename__ = 'stop_times_updates'
+    __tablename__ = 'stop_time_updates'
     oid = Column(Integer, primary_key=True)
 
     # TODO: Fill one from the other

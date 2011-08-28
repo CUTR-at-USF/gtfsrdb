@@ -43,6 +43,9 @@ p.add_option('-d', '--database', default=None, dest='dsn',
 p.add_option('-c', '--create-tables', default=False, dest='create',
              action='store_true', help="Create tables if they aren't found")
 
+p.add_option('-w', '--wait', default=30, type='int', metavar='SECS',
+             dest='timeout', help='Time to wait between requests (in seconds)')
+
 p.add_option('-v', '--verbose', default=False, dest='verbose', 
              action='store_true', help='Print generated SQL')
 
@@ -93,6 +96,7 @@ while 1:
         if fm.header.gtfs_realtime_version != u'1.0':
             print 'Warning: feed version has changed: found %s, expected 1.0' % fm.header.gtfs_realtime_version
 
+        print 'Adding %s trip updates' % len(fm.entity)
         for entity in fm.entity:
             tu = entity.trip_update
             dbtu = TripUpdate(
@@ -106,4 +110,24 @@ while 1:
                 vehicle_license_plate = tu.vehicle.license_plate)
 
             session.add(dbtu)
+
+            for stu in tu.stop_time_update:
+                dbstu = StopTimeUpdate(
+                    stop_sequence = stu.stop_sequence,
+                    stop_id = stu.stop_id,
+                    arrival_delay = stu.arrival.delay,
+                    arrival_time = stu.arrival.time,
+                    arrival_uncertainty = stu.arrival.uncertainty,
+                    departure_delay = stu.departure.delay,
+                    departure_time = stu.departure.time,
+                    departure_uncertainty = stu.departure.uncertainty,
+                    # schedule_relationship?
+                    )
+                session.add(dbstu)
+                dbtu.StopTimeUpdates.append(dbstu)
+
+        session.commit()
+
+    # TODO: make configurable
+    sleep(opts.timeout)
 
