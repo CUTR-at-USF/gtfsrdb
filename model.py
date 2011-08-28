@@ -102,7 +102,7 @@ class Alert(Base):
     header_text = Column(String(80))
     description_text = Column(String(4000))
 
-    InformedEntities = relationship('entity_selectors', backref='Alert')
+    InformedEntities = relationship('EntitySelector', backref='Alert')
 
 class EntitySelector(Base):
     __tablename__ = 'entity_selectors'
