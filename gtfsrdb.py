@@ -100,17 +100,24 @@ while 1:
         print 'Adding %s trip updates' % len(fm.entity)
         for entity in fm.entity:
             tu = entity.trip_update
+
             dbtu = TripUpdate(
                 trip_id = tu.trip.trip_id,
                 route_id = tu.trip.route_id,
                 trip_start_time = tu.trip.start_time,
                 trip_start_date = tu.trip.start_date,
-                # schedule_relationship?
+
+                # get the schedule relationship
+                # This is somewhat undocumented, but by referencing the 
+                # DESCRIPTOR.enum_types_by_name, you get a dict of enum types
+                # as described at http://code.google.com/apis/protocolbuffers/docs/reference/python/google.protobuf.descriptor.EnumDescriptor-class.html
+                schedule_relationship = tu.trip.DESCRIPTOR.enum_types_by_name['ScheduleRelationship'].values_by_number[tu.trip.schedule_relationship].name,
+
                 vehicle_id = tu.vehicle.id,
                 vehicle_label = tu.vehicle.label,
                 vehicle_license_plate = tu.vehicle.license_plate,
                 timestamp = timestamp)
-
+ 
             session.add(dbtu)
 
             for stu in tu.stop_time_update:
@@ -123,7 +130,7 @@ while 1:
                     departure_delay = stu.departure.delay,
                     departure_time = stu.departure.time,
                     departure_uncertainty = stu.departure.uncertainty,
-                    # schedule_relationship?
+                    schedule_relationship = tu.trip.DESCRIPTOR.enum_types_by_name['ScheduleRelationship'].values_by_number[tu.trip.schedule_relationship].name
                     )
                 session.add(dbstu)
                 dbtu.StopTimeUpdates.append(dbstu)
