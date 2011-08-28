@@ -23,8 +23,8 @@
 
 import gtfs_realtime_pb2
 from optparse import OptionParser
-from datetime import datetime
-from time import sleep
+import time
+import datetime
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from urllib2 import urlopen
@@ -83,14 +83,15 @@ for table in Base.metadata.tables.keys():
 
 # This is the loop
 while 1:
-    # Allow failures to occur
-    #try:
-    
     if opts.tripUpdates:
         fm = gtfs_realtime_pb2.FeedMessage()
         fm.ParseFromString(
             urlopen(opts.tripUpdates).read()
             )
+
+        # Convert this a Python object, and save it to be placed into each
+        # trip_update
+        timestamp = datetime.datetime.utcfromtimestamp(fm.header.timestamp)
 
         # Check the feed version
         if fm.header.gtfs_realtime_version != u'1.0':
@@ -107,7 +108,8 @@ while 1:
                 # schedule_relationship?
                 vehicle_id = tu.vehicle.id,
                 vehicle_label = tu.vehicle.label,
-                vehicle_license_plate = tu.vehicle.license_plate)
+                vehicle_license_plate = tu.vehicle.license_plate,
+                timestamp = timestamp)
 
             session.add(dbtu)
 
@@ -128,6 +130,8 @@ while 1:
 
         session.commit()
 
+        
+
     # TODO: make configurable
-    sleep(opts.timeout)
+    time.sleep(opts.timeout)
 

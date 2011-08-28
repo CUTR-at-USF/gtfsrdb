@@ -20,7 +20,7 @@
 # Matt Conway: main code
 
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, ForeignKey, Integer, String, Time, Boolean
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Boolean
 from sqlalchemy.orm import relationship, backref
 
 Base = declarative_base()
@@ -53,6 +53,9 @@ class TripUpdate(Base):
     vehicle_id = Column(String)
     vehicle_label = Column(String)
     vehicle_license_plate = Column(String)
+
+    # moved from the header, and reformatted as datetime
+    timestamp = Column(DateTime)
 
     StopTimeUpdates = relationship('StopTimeUpdate', backref='TripUpdate')
     
