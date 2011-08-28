@@ -119,6 +119,6 @@ class EntitySelector(Base):
     trip_start_time = Column(String(8))
     trip_start_date = Column(String(10))
 
-    alert_id = Column(Integer, ForeignKey('alerts'))
+    alert_id = Column(Integer, ForeignKey('alerts.oid'))
 
 # TODO: Add vehicle positioning
