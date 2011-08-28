@@ -92,20 +92,10 @@ class Alert(Base):
 
     # Collapsed TimeRange
     start = Column(Integer)
-    end = Column(Integer)
-
-    # Collapsed EntitySelector
-    agency_id = Column(String(15))
-    route_id = Column(String(10))
-    route_type = Column(Integer)
-    stop_id = Column(String(10))    
-
-    # Collapsed TripDescriptor
-    trip_id = Column(String(10))
-    route_id = Column(String(10))
-    trip_start_time = Column(String(8))
-    trip_start_date = Column(String(10))
+    end = Column(Integer)    
     
+    InformedEntities = relationship('entity_selectors', backref='Alert')
+
     # Add domain
     cause = Column(String(20))
     effect = Column(String(20))
@@ -113,5 +103,22 @@ class Alert(Base):
     url = Column(String(300))
     header_text = Column(String(80))
     description_text = Column(String(4000))
+
+class EntitySelector(Base):
+    __tablename__ = 'entity_selectors'
+    oid = Column(Integer, primary_key=True)
+
+    agency_id = Column(String(15))
+    route_id = Column(String(10))
+    route_type = Column(Integer)
+    stop_id = Column(String(10))
+
+    # Collapsed TripDescriptor
+    trip_id = Column(String(10))
+    trip_route_id = Column(String(10))
+    trip_start_time = Column(String(8))
+    trip_start_date = Column(String(10))
+
+    alert_id = Column(Integer, ForeignKey('alerts'))
 
 # TODO: Add vehicle positioning
