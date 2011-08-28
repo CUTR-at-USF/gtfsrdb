@@ -1,0 +1,13 @@
+GTFSrDB - GTFS-realtime to Database
+===================================
+
+GTFSrDB loads GTFS-realtime data to a database so it can be archived
+for historical purposes. It it designed to work in tandem with gtfsdb
+(http://code.google.com/p/gtfsdb/).
+
+It uses SQLAlchemy, so it should work with most any database system;
+I've been using it with SQLite. Just specify a database url on the
+command line with -d.
+
+Example use (for Bay Area Rapid Transit):
+gtfsrdb.py -t http://www.bart.gov/dev/gtrtfs/tripupdate.aspx -d sqlite:///test.db -c
