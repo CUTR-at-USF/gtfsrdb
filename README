@@ -10,4 +10,8 @@ I've been using it with SQLite. Just specify a database url on the
 command line with -d.
 
 Example use (for Bay Area Rapid Transit):
+
 gtfsrdb.py -t http://www.bart.gov/dev/gtrtfs/tripupdate.aspx -d sqlite:///test.db -c
+
+The model for the data is in model.py; you should be able to use this 
+standalone with SQLAlchemy to process the data in Python.
