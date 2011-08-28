@@ -93,8 +93,6 @@ class Alert(Base):
     # Collapsed TimeRange
     start = Column(Integer)
     end = Column(Integer)    
-    
-    InformedEntities = relationship('entity_selectors', backref='Alert')
 
     # Add domain
     cause = Column(String(20))
@@ -103,6 +101,8 @@ class Alert(Base):
     url = Column(String(300))
     header_text = Column(String(80))
     description_text = Column(String(4000))
+
+    InformedEntities = relationship('entity_selectors', backref='Alert')
 
 class EntitySelector(Base):
     __tablename__ = 'entity_selectors'
