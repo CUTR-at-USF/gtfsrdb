@@ -104,8 +104,8 @@ def getTrans(string, lang):
 
 # This is the loop
 while 1:
-    #try:
-    if True:
+    try:
+    #if True:
         if opts.tripUpdates:
             fm = gtfs_realtime_pb2.FeedMessage()
             fm.ParseFromString(
@@ -202,8 +202,8 @@ while 1:
                         dbalert.InformedEntities.append(dbie)
 
             session.commit()
-    #except:
-    else:
+    except:
+    #else:
         print 'Exception occurred in iteration'
         print sys.exc_info()
 
