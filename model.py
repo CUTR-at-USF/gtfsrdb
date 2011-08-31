@@ -122,3 +122,6 @@ class EntitySelector(Base):
     alert_id = Column(Integer, ForeignKey('alerts.oid'))
 
 # TODO: Add vehicle positioning
+
+# So one can loop over all classes to clear them for a new load (-o option)
+AllClasses = (TripUpdate, StopTimeUpdate, Alert, EntitySelector)

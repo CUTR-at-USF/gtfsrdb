@@ -41,6 +41,10 @@ p.add_option('-a', '--alerts', default=None, dest='alerts',
 p.add_option('-d', '--database', default=None, dest='dsn',
              help='Database connection string', metavar='DSN')
 
+p.add_option('-o', '--discard-old', default=False, dest='deleteOld', 
+             action='store_true', 
+             help='Dicard old updates, so the database is always current')
+
 p.add_option('-c', '--create-tables', default=False, dest='create',
              action='store_true', help="Create tables if they aren't found")
 
@@ -106,6 +110,13 @@ def getTrans(string, lang):
 while 1:
     try:
     #if True:
+        if opts.deleteOld:
+            # Go through all of the tables that we create, clear them
+            # Don't mess with other tables (i.e., tables from static GTFS)
+            for theClass in AllClasses:
+                for obj in session.query(theClass):
+                    session.delete(obj)
+
         if opts.tripUpdates:
             fm = gtfs_realtime_pb2.FeedMessage()
             fm.ParseFromString(
@@ -201,6 +212,8 @@ while 1:
                         session.add(dbie)
                         dbalert.InformedEntities.append(dbie)
 
+            # This does deletes and adds, since it's atomic it never leaves us
+            # without data
             session.commit()
     except:
     #else:
