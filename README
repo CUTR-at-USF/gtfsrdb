@@ -8,8 +8,8 @@ designed to work in tandem with gtfsdb
 (http://code.google.com/p/gtfsdb/).
 
 It uses SQLAlchemy, so it should work with most any database system;
-I've been using it with SQLite. Just specify a database url on the
-command line with -d.
+I've been using it with SQLite and Postgres. Just specify a database
+url on the command line with -d.
 
 Example use (for Bay Area Rapid Transit):
 
@@ -25,6 +25,14 @@ each update to be saved forever (useful for historical purposes). Note
 that using this option will erase ALL TRIP UPDATES and ALL ALERTS from
 the database on each iteration - even those that were in the database
 before the session was started.
+
+This is GTFSrDB's biggest strength - if you pass the -o option, your
+database will be perpetually up-to-date with the GTFS-realtime feed,
+so you can write scripts &c that refer to it without worrying about
+the plumbing to get the data in place.
+
+It is recommended that you run VACUUM ANALYZE frequently, as GTFSrDB
+generates quite a few creations and deletions.
 
 KNOWN LIMITATIONS
 =================
