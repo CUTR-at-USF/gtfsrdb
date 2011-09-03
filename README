@@ -177,20 +177,13 @@ SELECT stop_times.stop_id, avg(stop_time_updates.arrival_delay) AS avg
 
 (I’ve removed the lat and lon columns from the following table for readability)
 
-1
 stop_id |            stop_name            |         avg
-2
 ---------+---------------------------------+----------------------
-3
  10853   | Parkrose/ Sumner Transit Center | 473.8260869565217391
-4
  7999    | NE 82nd & MAX Overpass          | 350.3050847457627119
-5
  9610    | Willow Creek Transit Center     | 310.2352941176470588
-6
  5846    | Tigard Transit Center           | 260.2093023255813953
-7
  12849   | 16200 Block SW Langer           | 244.6111111111111111
-8
 . . .
+
 The code is available on GitHub. Address any questions to the email on that page or to the contact link, above.
