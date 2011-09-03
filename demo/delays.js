@@ -23,7 +23,12 @@
 
 MAP_PROJ = 'EPSG:900913';
 DB_PROJ  = 'EPSG:4326';
-INTENSITY_MULTIPLIER = 1;
+
+// The maximum delay that will be displayed; all others will be truncated to
+// this. Seconds.
+SCALE_TOP = 10 * 60; // 10 mins
+SCALE_BOT = -10 * 60; // -3 mins (i.e. 3 mins early)
+
 
 function drawHeatmap () {
     $('#load').fadeIn();
@@ -31,9 +36,10 @@ function drawHeatmap () {
     var oldLayer = heat;
 
     heat = new IDW.Layer();
-    heat.colours = [0x00ff00ff, 0xff0000ff, 0x00ffff];
+    heat.colours = [0x0000ffff, 0x00aa00ff, 0xff0000ff];
 
     var maxDelay = 0;
+    var minDelay = 0;
 
     // Yay! No XHR issues!
     $.ajax({
@@ -44,16 +50,27 @@ function drawHeatmap () {
 	    var dataLen = data.length;
 
 	    for (var i = 0; i < dataLen; i++) {
+		// Truncate the delays to the scale
+		if (data[i].avg > SCALE_TOP) avg = SCALE_TOP;
+		else if (data[i].avg < SCALE_BOT) avg = SCALE_BOT;
+		else avg = data[i].avg;
+
 		source = new IDW.Source(
 		    new OpenLayers.LonLat(data[i].stop_lon,
 					  data[i].stop_lat)
 			.transform(new OpenLayers.Projection(DB_PROJ),
 				   map.getProjectionObject()),
-		data[i].avg)
+		avg)
 		heat.addSource(source);
 		
+		// This still refers to the non-tructaed average
 		if (data[i].avg > maxDelay) maxDelay = data[i].avg;
+		if (data[i].avg < minDelay) minDelay = data[i].avg;
 	    }
+
+	    // Force the scale to stay the same, at the min and max.
+	    heat.minval = SCALE_BOT;
+	    heat.maxval = SCALE_TOP;
 
 	    heat.setOpacity(0.65);
 	    heat.pixelSize = 8;
@@ -67,7 +84,13 @@ function drawHeatmap () {
 	    var mins = Math.floor(maxDelay/60);
 	    var secs = Math.round(maxDelay - (mins*60));
 
+	    minDelay = Math.abs(minDelay);
+	    var minMins = Math.floor(minDelay/60);
+	    var minSecs = Math.round(minDelay - (minMins*60));
+
+	    
 	    $('#maxDelay').text(mins + 'm ' + secs + 's');
+	    $('#minDelay').text('-' + minMins + 'm ' + minSecs + 's');
 	    $('#load').fadeOut();
 	}
     });
