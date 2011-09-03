@@ -26,6 +26,8 @@ DB_PROJ  = 'EPSG:4326';
 INTENSITY_MULTIPLIER = 1;
 
 function drawHeatmap () {
+    $('#load').fadeIn();
+
     var oldLayer = heat;
 
     heat = new IDW.Layer();
@@ -40,13 +42,14 @@ function drawHeatmap () {
 	dataType: 'json',
 	success: function (data) {
 	    var dataLen = data.length;
+
 	    for (var i = 0; i < dataLen; i++) {
 		source = new IDW.Source(
 		    new OpenLayers.LonLat(data[i].stop_lon,
 					  data[i].stop_lat)
 			.transform(new OpenLayers.Projection(DB_PROJ),
 				   map.getProjectionObject()),
-		data[i].avg * INTENSITY_MULTIPLIER)
+		data[i].avg)
 		heat.addSource(source);
 		
 		if (data[i].avg > maxDelay) maxDelay = data[i].avg;
@@ -65,6 +68,7 @@ function drawHeatmap () {
 	    var secs = Math.round(maxDelay - (mins*60));
 
 	    $('#maxDelay').text(mins + 'm ' + secs + 's');
+	    $('#load').fadeOut();
 	}
     });
 }
