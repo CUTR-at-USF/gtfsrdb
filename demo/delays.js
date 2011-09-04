@@ -36,6 +36,8 @@ function drawHeatmap () {
     var oldLayer = heat;
 
     heat = new IDW.Layer();
+    heat.attribution = '<br/>Route and arrival data provided by permission of '+
+	'<a target="_blank" href="http://www.trimet.org">TriMet.</a>'
     heat.colours = [0x0000ffff, 0x00aa00ff, 0xff0000ff];
 
     var maxDelay = 0;
