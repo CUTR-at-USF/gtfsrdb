@@ -38,6 +38,9 @@ p.add_option('-t', '--trip-updates', dest='tripUpdates', default=None,
 p.add_option('-a', '--alerts', default=None, dest='alerts', 
              help='The alerts URL', metavar='URL')
 
+p.add_option('-p', '--vehicle-positions', dest='vehiclePositions', default=None, 
+             help='The vehicle positions URL', metavar='URL')
+
 p.add_option('-d', '--database', default=None, dest='dsn',
              help='Database connection string', metavar='DSN')
 
@@ -63,8 +66,8 @@ if opts.dsn == None:
     print 'No database specified!'
     exit(1)
 
-if opts.alerts == None and opts.tripUpdates == None:
-    print 'Neither trip updates or alerts URLs were specified!'
+if opts.alerts == None and opts.tripUpdates == None and opts.vehiclePositions == None:
+    print 'No trip updates, alerts, or vehicle positions URLs were specified!'
     exit(1)
 
 if opts.alerts == None:
@@ -73,6 +76,9 @@ if opts.alerts == None:
 if opts.tripUpdates == None:
     print 'Warning: no trip update URL specified, proceeding without trip updates'
 
+if opts.vehiclePositions == None:
+    print 'Warning: no vehicle positions URL specified, proceeding without vehicle positions'
+    
 # Connect to the database
 engine = create_engine(opts.dsn, echo=opts.verbose)
 # sessionmaker returns a class
@@ -211,6 +217,40 @@ try:
                                 trip_start_date = ie.trip.start_date)
                             session.add(dbie)
                             dbalert.InformedEntities.append(dbie)
+            if opts.vehiclePositions:
+                fm = gtfs_realtime_pb2.FeedMessage()
+                fm.ParseFromString(
+                    urlopen(opts.vehiclePositions).read()
+                    )
+
+                # Convert this a Python object, and save it to be placed into each
+                # vehicle_position
+                timestamp = datetime.datetime.utcfromtimestamp(fm.header.timestamp)
+
+                # Check the feed version
+                if fm.header.gtfs_realtime_version != u'1.0':
+                    print 'Warning: feed version has changed: found %s, expected 1.0' % fm.header.gtfs_realtime_version
+
+                print 'Adding %s vehicle_positions' % len(fm.entity)
+                for entity in fm.entity:
+
+                    vp = entity.vehicle
+
+                    dbvp = VehiclePosition(
+                        trip_id = vp.trip.trip_id,
+                        route_id = vp.trip.route_id,
+                        trip_start_time = vp.trip.start_time,
+                        trip_start_date = vp.trip.start_date,                      
+                        vehicle_id = vp.vehicle.id,
+                        vehicle_label = vp.vehicle.label,
+                        vehicle_license_plate = vp.vehicle.license_plate,
+                        position_latitude = vp.position.latitude,
+                        position_longitude = vp.position.longitude,
+                        position_bearing = vp.position.bearing,
+                        position_speed = vp.position.speed,
+                        timestamp = timestamp)
+                    
+                    session.add(dbvp)
 
             # This does deletes and adds, since it's atomic it never leaves us
             # without data
