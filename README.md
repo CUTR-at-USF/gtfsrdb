@@ -112,14 +112,14 @@ that the first two are for BART, which embeds stop_ids in GTFSr; other agencies
 stop_time_updates.stop_sequence; you'll need to use slightly more complex
 queries for those.
 
--- this query shows all of the stop time updates that relate cleanly
--- to the stops table. Keep in mind that trips.trip_id =
--- trip_updates.trip_id only works for trips that are not
--- frequency-expanded (i.e. multiple trips with the same trip_id)
-SELECT trips.route_id, trips.trip_id, trips.trip_headsign, trip_updates.schedule_relationship, stop_time_updates.stop_id, stop_time_updates.arrival_delay
-  FROM trip_updates, stop_time_updates, trips
-  WHERE trips.trip_id::text = trip_updates.trip_id::text AND trip_updates.oid = stop_time_updates.trip_update_id
-  ORDER BY stop_time_updates.stop_id;
+This query shows all of the stop time updates that relate cleanly to the stops table. 
+Keep in mind that trips.trip_id = trip_updates.trip_id only works for trips that are not
+frequency-expanded (i.e. multiple trips with the same trip_id)
+
+    SELECT trips.route_id, trips.trip_id, trips.trip_headsign, trip_updates.schedule_relationship, stop_time_updates.stop_id, stop_time_updates.arrival_delay
+    FROM trip_updates, stop_time_updates, trips
+    WHERE trips.trip_id::text = trip_updates.trip_id::text AND trip_updates.oid = stop_time_updates.trip_update_id
+    ORDER BY stop_time_updates.stop_id;
 
     route_id | trip_id |     trip_headsign     | schedule_relationship | stop_id | arrival_delay 
     ----------+---------+-----------------------+-----------------------+---------+---------------
@@ -152,16 +152,15 @@ SELECT trips.route_id, trips.trip_id, trips.trip_headsign, trip_updates.schedule
     11       | 65DCM2  | DALY CITY             | SCHEDULED             | WOAK    |             0
     (27 rows)
 
-
--- This query gives you an overview of the entire BART system, with
--- average delays for each stop where trains are predicted.
--- I may spatially enable this database and make a heatmap of where
--- delays are in a given transit system by interpolating between points.
-SELECT stops.stop_id, stops.stop_name, stops.stop_lat, stops.stop_lon, avg(stop_time_updates.arrival_delay) AS avg
-   FROM stop_time_updates, stops
-  WHERE stops.stop_id::text = stop_time_updates.stop_id::text
-  GROUP BY stops.stop_id, stops.stop_name, stops.stop_lat, stops.stop_lon
-  ORDER BY stops.stop_name;
+This query gives you an overview of the entire BART system, with average delays for each stop 
+where trains are predicted.  I may spatially enable this database and make a heatmap of where
+delays are in a given transit system by interpolating between points.
+    
+    SELECT stops.stop_id, stops.stop_name, stops.stop_lat, stops.stop_lon, avg(stop_time_updates.arrival_delay) AS avg
+    FROM stop_time_updates, stops
+    WHERE stops.stop_id::text = stop_time_updates.stop_id::text
+    GROUP BY stops.stop_id, stops.stop_name, stops.stop_lat, stops.stop_lon
+    ORDER BY stops.stop_name;
 
     stop_id |           stop_name           |   stop_lat   |    stop_lon    |          avg           
     ---------+-------------------------------+--------------+----------------+------------------------
