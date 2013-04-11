@@ -201,28 +201,29 @@ It accomplishes two primary tasks:
 It’s designed to work with GTFSdb; it will coexist with static GTFS data in a database, so you can easily relate them. Keep in mind that if you update the GTFS data, you’ll lose archived GTFSr data.
 Here is an example query to find what stops have the largest delays (in seconds, for the TriMet system in Portland, OR:
 
-SELECT stops.stop_id, stops.stop_name, stops.stop_lat, stops.stop_lon, stop_delays.avg
-  FROM stops, stop_delays
-  WHERE stops.stop_id = stop_delays.stop_id
-  ORDER BY avg DESC;
+    SELECT stops.stop_id, stops.stop_name, stops.stop_lat, stops.stop_lon, stop_delays.avg
+    FROM stops, stop_delays
+    WHERE stops.stop_id = stop_delays.stop_id
+    ORDER BY avg DESC;
 
 The stop_delays view looks like this:
 
 
-SELECT stop_times.stop_id, avg(stop_time_updates.arrival_delay) AS avg
-  FROM stop_time_updates, stop_times, trip_updates
- WHERE stop_times.trip_id::text = trip_updates.trip_id::text AND stop_times.stop_sequence = stop_time_updates.stop_sequence AND stop_time_updates.trip_update_id = trip_updates.oid
- GROUP BY stop_times.stop_id
- ORDER BY avg(stop_time_updates.arrival_delay) DESC;
+    SELECT stop_times.stop_id, avg(stop_time_updates.arrival_delay) AS avg
+    FROM stop_time_updates, stop_times, trip_updates
+    WHERE stop_times.trip_id::text = trip_updates.trip_id::text AND stop_times.stop_sequence = stop_time_updates.stop_sequence AND stop_time_updates.trip_update_id = trip_updates.oid
+    GROUP BY stop_times.stop_id
+    ORDER BY avg(stop_time_updates.arrival_delay) DESC;
+
 (I had to pull in the trip_updates table for TriMet because they don’t have a stop_id in their stop_time_updates; they instead specify trip_id and stop_sequence.)
 
 (I’ve removed the lat and lon columns from the following table for readability)
 
-stop_id |            stop_name            |         avg
----------+---------------------------------+----------------------
- 10853   | Parkrose/ Sumner Transit Center | 473.8260869565217391
- 7999    | NE 82nd & MAX Overpass          | 350.3050847457627119
- 9610    | Willow Creek Transit Center     | 310.2352941176470588
- 5846    | Tigard Transit Center           | 260.2093023255813953
- 12849   | 16200 Block SW Langer           | 244.6111111111111111
+    stop_id |            stop_name            |         avg
+    ---------+---------------------------------+----------------------
+    10853   | Parkrose/ Sumner Transit Center | 473.8260869565217391
+    7999    | NE 82nd & MAX Overpass          | 350.3050847457627119
+    9610    | Willow Creek Transit Center     | 310.2352941176470588
+    5846    | Tigard Transit Center           | 260.2093023255813953
+    12849   | 16200 Block SW Langer           | 244.6111111111111111
 . . .
