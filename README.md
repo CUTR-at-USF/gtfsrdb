@@ -1,35 +1,66 @@
 GTFSrDB - GTFS-realtime to Database
 ===================================
 
-GTFSrDB loads GTFS-realtime data to a database.  It will run an keep a
-database up-to-date with the latest GTFSr data. It can also be used to
-archive this data for historical or statistical purposes. It it
-designed to work in tandem with gtfsdb
-(http://code.google.com/p/gtfsdb/).
+GTFSrDB loads GTFS-realtime data to a database.  
 
-It uses SQLAlchemy, so it should work with most any database system;
-I've been using it with SQLite and Postgres. Just specify a database
-url on the command line with -d.
+GTFSrDB supports all 3 types of GTFS-realtime feeds:
 
-Example use (for Bay Area Rapid Transit):
+1. [TripUpdates](https://developers.google.com/transit/gtfs-realtime/trip-updates) - specify url with `-t` option
+2. [Service Alerts](https://developers.google.com/transit/gtfs-realtime/vehicle-positions) - specify url with `-a` option
+3. [VehiclePositions](https://developers.google.com/transit/gtfs-realtime/vehicle-positions) - specify url with `-p` option
 
-gtfsrdb.py -t http://www.bart.gov/dev/gtrtfs/tripupdate.aspx -d sqlite:///test.db -c
+You can process multiple types of GTFS-realtime feeds in the same execution by using multiple command line options.
 
-The model for the data is in model.py; you should be able to use this 
+GTFSrDB will run an keep a database up-to-date with the latest GTFSr data. It can also be used to
+archive this data for historical or statistical purposes. GTFSrDB is designed to work in tandem 
+with [gtfsdb](http://code.google.com/p/gtfsdb/).  GTFSrDB uses SQLAlchemy, so it should work with 
+most any database system; So far its been used with SQLite, Postgres, and Microsoft SQL Server. 
+Just specify a database url on the command line with `-d`.
+
+### Example Use
+
+1. Bay Area Rapid Transit with GTFS-realtime TripUpdates:
+
+  a. Using SQLite:
+
+    `gtfsrdb.py -t http://www.bart.gov/dev/gtrtfs/tripupdate.aspx -d sqlite:///test.db -c`
+
+  b. Using Microsoft SQL Server (note you'll need [pyodbc](https://code.google.com/p/pyodbc/downloads/detail?name=pyodbc-3.0.6.win-amd64-py2.7.exe&can=2&q=)):
+
+    `gtfsrdb.py -t http://www.bart.gov/dev/gtrtfs/tripupdate.aspx -d 
+      mssql+pyodbc://<username>:<password>@<public_database_server_name>/<database_name> -c`
+
+   So, if the `username=jdoe`, `password=pswd`, `public_database_server_name=my.public.database.org`, `database_name=gtfsrdb`, the command is:
+
+    `gtfsrdb.py -t http://www.bart.gov/dev/gtrtfs/tripupdate.aspx -d 
+      mssql+pyodbc://jdoe:pswd@my.public.database.org/gtfsrdb -c`
+
+2. Massachusetts Bay Transportation Authority with GTFS-realtime VehiclePositions:
+
+  a. Using SQLite:
+  
+    `gtfsrdb.py -p http://developer.mbta.com/lib/gtrtfs/Vehicles.pb -d sqlite:///test.db -c`
+
+The model for the data is in `model.py`; you should be able to use this 
 standalone with SQLAlchemy to process the data in Python.
 
-It supports both trip updates (specify url with -t option) and alerts
-(-a). The -o option instructs it to keep the database up-to-date by
-deleting outdated updates and alerts. Omitting this option will cause
+The `-o` command line option instructs GTFSrDB to keep the database up-to-date by
+deleting outdated trip updates, vehicle positions, and alerts. Omitting this option will cause
 each update to be saved forever (useful for historical purposes). Note
-that using this option will erase ALL TRIP UPDATES and ALL ALERTS from
+that using this option will *ERASE ALL TRIP UPDATES, ALL ALERTS, and ALL VEHICLE POSITIONS* from
 the database on each iteration - even those that were in the database
 before the session was started.
 
-This is GTFSrDB's biggest strength - if you pass the -o option, your
+This is GTFSrDB's biggest strength - if you pass the `-o` option, your
 database will be perpetually up-to-date with the GTFS-realtime feed,
 so you can write scripts &c that refer to it without worrying about
 the plumbing to get the data in place.
+
+Other command line parameters:
+
+* `-w` = Time to wait between requests (in seconds) (default=30s)
+* `-v` = Print generated SQL (verbose mode)
+* `-l` = When multiple translations are available, prefer this language
 
 It is recommended that you run VACUUM ANALYZE frequently, as GTFSrDB
 generates quite a few creations and deletions.
@@ -52,6 +83,13 @@ joined tables):
   language specified with the -l option, b) any untranslated string if
   a string for the language is not found, or c) the only string in the 
   case of a single string in the file.
+* Position.latitude becomes position_latitude
+* Position.longitude becomes position_longitude
+* Position.bearing becomes position_bearing
+* Position.speed becomes position_speed
+* VehicleDescriptor.id becomes vehicle_id
+* VehicleDescriptor.label becomes vehicle_label
+* VehicleDescriptor.license_plate becomes vehicle_license_plate 
 
 USING IT WITH GTFSDB
 ====================
