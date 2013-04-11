@@ -6,7 +6,7 @@ GTFSrDB loads GTFS-realtime data to a database.
 GTFSrDB supports all 3 types of GTFS-realtime feeds:
 
 1. [TripUpdates](https://developers.google.com/transit/gtfs-realtime/trip-updates) - specify url with `-t` option
-2. [Service Alerts](https://developers.google.com/transit/gtfs-realtime/vehicle-positions) - specify url with `-a` option
+2. [Service Alerts](https://developers.google.com/transit/gtfs-realtime/service-alerts) - specify url with `-a` option
 3. [VehiclePositions](https://developers.google.com/transit/gtfs-realtime/vehicle-positions) - specify url with `-p` option
 
 You can process multiple types of GTFS-realtime feeds in the same execution by using multiple command line options.
