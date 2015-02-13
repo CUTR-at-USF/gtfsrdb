@@ -60,6 +60,9 @@ p.add_option('-v', '--verbose', default=False, dest='verbose',
 p.add_option('-l', '--language', default='en', dest='lang', metavar='LANG',
              help='When multiple translations are available, prefer this language')
 
+p.add_option('-1', '--once',  default=False, dest='once', action='store_true',
+             help='only run the loader one time')
+
 opts, args = p.parse_args()
 
 if opts.dsn == None:
@@ -112,7 +115,8 @@ def getTrans(string, lang):
     return untranslated
 
 try:
-    while True:
+    keep_running = True
+    while keep_running:
         try:
         #if True:
             if opts.deleteOld:
@@ -265,7 +269,11 @@ try:
         # fails
         # also, makes it easier to end the process with ctrl-c, b/c a 
         # KeyboardInterrupt here will end the program (cleanly)
-        time.sleep(opts.timeout)
+        if opts.once:
+            print "Executed the load ONCE ... going to stop now..."
+            keep_running = False
+        else:
+            time.sleep(opts.timeout)
 
 finally:
     print "Closing session . . ."
