@@ -20,7 +20,7 @@
 # Matt Conway: main code
 
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Boolean
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Boolean, Float
 from sqlalchemy.orm import relationship, backref
 
 Base = declarative_base()
@@ -31,6 +31,13 @@ Base = declarative_base()
 # StopTimeUpdate.arrival
 # StopTimeUpdate.departure
 # Alert.active_period
+# Position.latitude
+# Position.longitude
+# Position.bearing
+# Position.speed
+# VehicleDescriptor.id
+# VehicleDescriptor.label
+# VehicleDescriptor.license_plate
 
 # The oid is called oid because several of the GTFSr types have string ids
 # TODO: add sequences
@@ -121,7 +128,31 @@ class EntitySelector(Base):
 
     alert_id = Column(Integer, ForeignKey('alerts.oid'))
 
-# TODO: Add vehicle positioning
+class VehiclePosition(Base):
+    __tablename__ = 'vehicle_positions'
+    oid = Column(Integer, primary_key=True)
+
+    # This replaces the TripDescriptor message
+    # TODO: figure out the relations
+    trip_id = Column(String(10))
+    route_id = Column(String(10))
+    trip_start_time = Column(String(8))
+    trip_start_date = Column(String(10))
+ 
+    # Collapsed VehicleDescriptor
+    vehicle_id = Column(String(10))
+    vehicle_label = Column(String(15))
+    vehicle_license_plate = Column(String(10))
+    
+    # Collapsed Position
+    position_latitude = Column(Float)
+    position_longitude = Column(Float)
+    position_bearing = Column(Float)
+    position_speed = Column(Float)
+
+    # moved from the header, and reformatted as datetime
+    timestamp = Column(DateTime)
+   
 
 # So one can loop over all classes to clear them for a new load (-o option)
-AllClasses = (TripUpdate, StopTimeUpdate, Alert, EntitySelector)
+AllClasses = (TripUpdate, StopTimeUpdate, Alert, EntitySelector, VehiclePosition)

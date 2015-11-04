@@ -36,6 +36,8 @@ function drawHeatmap () {
     var oldLayer = heat;
 
     heat = new IDW.Layer();
+    heat.attribution = '<br/>Route and arrival data provided by permission of '+
+	'<a target="_blank" href="http://www.trimet.org">TriMet.</a>'
     heat.colours = [0x0000ffff, 0x00aa00ff, 0xff0000ff];
 
     var maxDelay = 0;
@@ -98,7 +100,7 @@ function drawHeatmap () {
 	
 
 $(document).ready(function () {
-    $('#map').width($(window).width() - 40);
+    $('#map').width($(window).width() - 180);
     $('#map').height($(window).height() - 60);
 
     map = new OpenLayers.Map("map", {projection: MAP_PROJ});
@@ -124,7 +126,6 @@ $(document).ready(function () {
     heat = null;
     drawHeatmap();
 
-    // in a few years, when 64x2.2GHz is common, we can turn this back on
     setInterval(drawHeatmap, 30*1000);
 
 });
