@@ -13,7 +13,7 @@ You can process multiple types of GTFS-realtime feeds in the same execution by u
 
 GTFSrDB will run and keep a database up-to-date with the latest GTFSr data. It can also be used to
 archive this data for historical or statistical purposes. GTFSrDB is designed to work in tandem 
-with [gtfsdb](http://code.google.com/p/gtfsdb/).  GTFSrDB uses SQLAlchemy, so it should work with 
+with [gtfsdb](https://github.com/OpenTransitTools/gtfsdb).  GTFSrDB uses SQLAlchemy, so it should work with 
 most any database system; So far its been used with SQLite, Postgres, and Microsoft SQL Server. 
 Just specify a database url on the command line with `-d`.
 
