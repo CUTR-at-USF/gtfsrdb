@@ -116,7 +116,7 @@ frequency-expanded (i.e. multiple trips with the same trip_id)
 
     SELECT trips.route_id, trips.trip_id, trips.trip_headsign, trip_updates.schedule_relationship, stop_time_updates.stop_id, stop_time_updates.arrival_delay
     FROM trip_updates, stop_time_updates, trips
-    WHERE trips.trip_id::text = trip_updates.trip_id::text AND trip_updates.oid = stop_time_updates.trip_update_id
+    WHERE trips.trip_id.text = trip_updates.trip_id.text AND trip_updates.oid = stop_time_updates.trip_update_id
     ORDER BY stop_time_updates.stop_id;
 
     route_id | trip_id |     trip_headsign     | schedule_relationship | stop_id | arrival_delay 
@@ -156,7 +156,7 @@ delays are in a given transit system by interpolating between points.
     
     SELECT stops.stop_id, stops.stop_name, stops.stop_lat, stops.stop_lon, avg(stop_time_updates.arrival_delay) AS avg
     FROM stop_time_updates, stops
-    WHERE stops.stop_id::text = stop_time_updates.stop_id::text
+    WHERE stops.stop_id.text = stop_time_updates.stop_id.text
     GROUP BY stops.stop_id, stops.stop_name, stops.stop_lat, stops.stop_lon
     ORDER BY stops.stop_name;
 
@@ -208,7 +208,7 @@ The stop_delays view looks like this:
 
     SELECT stop_times.stop_id, avg(stop_time_updates.arrival_delay) AS avg
     FROM stop_time_updates, stop_times, trip_updates
-    WHERE stop_times.trip_id::text = trip_updates.trip_id::text AND stop_times.stop_sequence = stop_time_updates.stop_sequence AND stop_time_updates.trip_update_id = trip_updates.oid
+    WHERE stop_times.trip_id.text = trip_updates.trip_id.text AND stop_times.stop_sequence = stop_time_updates.stop_sequence AND stop_time_updates.trip_update_id = trip_updates.oid
     GROUP BY stop_times.stop_id
     ORDER BY avg(stop_time_updates.arrival_delay) DESC;
 
