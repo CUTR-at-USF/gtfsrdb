@@ -23,16 +23,16 @@ Just specify a database url on the command line with `-d`.
 
   a. Using SQLite:
 
-    `gtfsrdb.py -t http://www.bart.gov/dev/gtrtfs/tripupdate.aspx -d sqlite:///test.db -c`
+    `gtfsrdb.py -t http://api.bart.gov/gtfsrt/tripupdate.aspx -d sqlite:///test.db -c`
 
   b. Using Microsoft SQL Server (note you'll need [pyodbc](https://code.google.com/p/pyodbc/downloads/detail?name=pyodbc-3.0.6.win-amd64-py2.7.exe&can=2&q=)):
 
-    `gtfsrdb.py -t http://www.bart.gov/dev/gtrtfs/tripupdate.aspx -d 
+    `gtfsrdb.py -t http://api.bart.gov/gtfsrt/tripupdate.aspx -d 
       mssql+pyodbc://<username>:<password>@<public_database_server_name>/<database_name> -c`
 
    So, if the `username=jdoe`, `password=pswd`, `public_database_server_name=my.public.database.org`, `database_name=gtfsrdb`, the command is:
 
-    `gtfsrdb.py -t http://www.bart.gov/dev/gtrtfs/tripupdate.aspx -d 
+    `gtfsrdb.py -t http://api.bart.gov/gtfsrt/tripupdate.aspx -d 
       mssql+pyodbc://jdoe:pswd@my.public.database.org/gtfsrdb -c`
 
 2. Massachusetts Bay Transportation Authority with GTFS-realtime VehiclePositions:
