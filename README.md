@@ -25,7 +25,7 @@ Just specify a database url on the command line with `-d`.
 
     gtfsrdb.py -t http://api.bart.gov/gtfsrt/tripupdate.aspx -d sqlite:///test.db -c
 
-  b. Using Microsoft SQL Server (note you'll need [pyodbc](https://code.google.com/p/pyodbc/downloads/detail?name=pyodbc-3.0.6.win-amd64-py2.7.exe&can=2&q=)):
+  b. Using Microsoft SQL Server (note you'll need [pyodbc](https://github.com/mkleehammer/pyodbc)):
 
     gtfsrdb.py -t http://api.bart.gov/gtfsrt/tripupdate.aspx -d mssql+pyodbc://<username>:<password>@<public_database_server_name>/<database_name> -c
 
