@@ -21,33 +21,33 @@ Just specify a database url on the command line with `-d`.
 
 1. Bay Area Rapid Transit with GTFS-realtime TripUpdates:
 
-  a. Using SQLite:
+   a. Using SQLite:
 
-    gtfsrdb.py -t http://api.bart.gov/gtfsrt/tripupdate.aspx -d sqlite:///test.db -c
+       gtfsrdb.py -t http://api.bart.gov/gtfsrt/tripupdate.aspx -d sqlite:///test.db -c
 
-  b. Using Microsoft SQL Server (note you'll need [pyodbc](https://github.com/mkleehammer/pyodbc)):
+   b. Using Microsoft SQL Server (note you'll need [pyodbc](https://github.com/mkleehammer/pyodbc)):
 
-    gtfsrdb.py -t http://api.bart.gov/gtfsrt/tripupdate.aspx -d mssql+pyodbc://<username>:<password>@<public_database_server_name>/<database_name> -c
+       gtfsrdb.py -t http://api.bart.gov/gtfsrt/tripupdate.aspx -d mssql+pyodbc://<username>:<password>@<public_database_server_name>/<database_name> -c
 
-   So, if the `username=jdoe`, `password=pswd`, `public_database_server_name=my.public.database.org`, `database_name=gtfsrdb`, the command is:
+      So, if the `username=jdoe`, `password=pswd`, `public_database_server_name=my.public.database.org`, `database_name=gtfsrdb`, the command is:
 
-    gtfsrdb.py -t http://api.bart.gov/gtfsrt/tripupdate.aspx -d mssql+pyodbc://jdoe:pswd@my.public.database.org/gtfsrdb -c
+       gtfsrdb.py -t http://api.bart.gov/gtfsrt/tripupdate.aspx -d mssql+pyodbc://jdoe:pswd@my.public.database.org/gtfsrdb -c
 
 2. Massachusetts Bay Transportation Authority with GTFS-realtime VehiclePositions:
 
-  a. Using SQLite:
+   a. Using SQLite:
   
-    gtfsrdb.py -p http://developer.mbta.com/lib/gtrtfs/Vehicles.pb -d sqlite:///test.db -c
+       gtfsrdb.py -p http://developer.mbta.com/lib/gtrtfs/Vehicles.pb -d sqlite:///test.db -c
 
 3.  GTFS-realtime VehiclePositions stored as offline protocol buffers
 
-  a. Using MySQL and Bash:
+   a. Using MySQL and Bash:
 
-    #!/bin/sh
-    for file in /path/to/files/*; 
-    do 
-      python /path/to/gtfsrdb.py --once -p file://$file -d "mysql://<username>:<password>@<public_database_server_name>/<database_name>" -c
-    done
+       #!/bin/sh
+       for file in /path/to/files/*; 
+       do 
+         python /path/to/gtfsrdb.py --once -p file://$file -d "mysql://<username>:<password>@<public_database_server_name>/<database_name>" -c
+       done
 
 The model for the data is in `model.py`; you should be able to use this 
 standalone with SQLAlchemy to process the data in Python.
