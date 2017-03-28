@@ -20,18 +20,20 @@
 
 # Authors:
 # Matt Conway: main code
+# Jorge Adorno
 
-import gtfs_realtime_pb2
 from optparse import OptionParser
-import time
-import sys
-import datetime
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from urllib2 import urlopen
 from model import *
+import gtfs_realtime_pb2
+import datetime
+import time
+import sys
 
 p = OptionParser()
+
 p.add_option('-t', '--trip-updates', dest='tripUpdates', default=None, 
              help='The trip updates URL', metavar='URL')
 
@@ -252,6 +254,7 @@ try:
                         position_longitude = vp.position.longitude,
                         position_bearing = vp.position.bearing,
                         position_speed = vp.position.speed,
+                        occupancy_status = gtfs_realtime_pb2.VehicleDescriptor.OccupancyStatus.DESCRIPTOR.values_by_number[vp.occupancy_status].name,
                         timestamp = timestamp)
                     
                     session.add(dbvp)
