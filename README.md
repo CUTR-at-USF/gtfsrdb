@@ -39,7 +39,7 @@ Just specify a database url on the command line with `-d`.
   
        gtfsrdb.py -p http://developer.mbta.com/lib/gtrtfs/Vehicles.pb -d sqlite:///test.db -c
 
-3.  GTFS-realtime VehiclePositions stored as offline protocol buffers
+3. GTFS-realtime VehiclePositions stored as offline protocol buffers
 
    a. Using MySQL and Bash:
 
