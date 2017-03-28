@@ -75,9 +75,10 @@ generates quite a few creations and deletions.
 
 KNOWN LIMITATIONS
 =================
-The following fields that are separate messages in GTFSr are collapsed
-into columns in the parent in the SQL database (to avoid creating many
-joined tables):
+Currently, the program does not check for duplicates when inserting to
+the database. Due to the database's relational nature, the following 
+fields that are separate messages in GTFSr are collapsed into columns 
+in the parent in the SQL database (to avoid creating many joined tables):
 
 * TripUpdate.trip becomes trip_id, route_id, trip_start_time, trip_start_date
 * TripUpdate.vehicle becomes vehicle_id, vehicle_label and
