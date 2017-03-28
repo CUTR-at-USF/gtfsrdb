@@ -207,7 +207,7 @@ It accomplishes two primary tasks:
 * Archiving historic real-time data.
 
 It’s designed to work with GTFSdb; it will coexist with static GTFS data in a database, so you can easily relate them. Keep in mind that if you update the GTFS data, you’ll lose archived GTFSr data.
-Here is an example query to find what stops have the largest delays (in seconds, for the TriMet system in Portland, OR:
+Here is an example query to find what stops have the largest delays (in seconds, for the TriMet system in Portland, OR):
 
     SELECT stops.stop_id, stops.stop_name, stops.stop_lat, stops.stop_lon, stop_delays.avg
     FROM stops, stop_delays
