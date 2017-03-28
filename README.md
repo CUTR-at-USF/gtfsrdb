@@ -19,7 +19,7 @@ Just specify a database url on the command line with `-d`.
 
 ### Example Use
 
-1. Bay Area Rapid Transit with GTFS-realtime TripUpdates:
+1. **Bay Area Rapid Transit with GTFS-realtime TripUpdates:**
 
    a. Using SQLite:
 
@@ -33,13 +33,13 @@ Just specify a database url on the command line with `-d`.
 
        gtfsrdb.py -t http://api.bart.gov/gtfsrt/tripupdate.aspx -d mssql+pyodbc://jdoe:pswd@my.public.database.org/gtfsrdb -c
 
-2. Massachusetts Bay Transportation Authority with GTFS-realtime VehiclePositions:
+2. **Massachusetts Bay Transportation Authority with GTFS-realtime VehiclePositions:**
 
    a. Using SQLite:
   
        gtfsrdb.py -p http://developer.mbta.com/lib/gtrtfs/Vehicles.pb -d sqlite:///test.db -c
 
-3. GTFS-realtime VehiclePositions stored as offline protocol buffers
+3. **GTFS-realtime VehiclePositions stored as offline protocol buffers**
 
    a. Using MySQL and Bash:
 
