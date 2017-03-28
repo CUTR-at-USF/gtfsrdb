@@ -39,6 +39,16 @@ Just specify a database url on the command line with `-d`.
   
     gtfsrdb.py -p http://developer.mbta.com/lib/gtrtfs/Vehicles.pb -d sqlite:///test.db -c
 
+3.  GTFS-realtime VehiclePositions stored as offline protocol buffers
+
+  a. Using MySQL and Bash:
+
+    #!/bin/sh
+    for file in /path/to/files/*; 
+    do 
+      python /path/to/gtfsrdb.py --once -p file://$file -d "mysql://<username>:<password>@<public_database_server_name>/<database_name>" -c
+    done
+
 The model for the data is in `model.py`; you should be able to use this 
 standalone with SQLAlchemy to process the data in Python.
 
