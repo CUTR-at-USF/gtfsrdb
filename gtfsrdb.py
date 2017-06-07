@@ -27,7 +27,10 @@ import time
 import sys
 from optparse import OptionParser
 import logging
-from urllib2 import urlopen
+try:
+    from urllib2 import urlopen
+except ImportError:
+    from urllib.request import urlopen
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import gtfs_realtime_pb2
