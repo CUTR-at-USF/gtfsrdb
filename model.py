@@ -49,8 +49,8 @@ class TripUpdate(Base):
 
     # This replaces the TripDescriptor message
     # TODO: figure out the relations
-    trip_id = Column(String(10))
-    route_id = Column(String(10))
+    trip_id = Column(String(64))
+    route_id = Column(String(64))
     trip_start_time = Column(String(8))
     trip_start_date = Column(String(10))
     # Put in the string value not the enum
@@ -120,13 +120,13 @@ class EntitySelector(Base):
     oid = Column(Integer, primary_key=True)
 
     agency_id = Column(String(15))
-    route_id = Column(String(10))
+    route_id = Column(String(64))
     route_type = Column(Integer)
     stop_id = Column(String(10))
 
     # Collapsed TripDescriptor
-    trip_id = Column(String(10))
-    trip_route_id = Column(String(10))
+    trip_id = Column(String(64))
+    trip_route_id = Column(String(64))
     trip_start_time = Column(String(8))
     trip_start_date = Column(String(10))
 
@@ -139,8 +139,8 @@ class VehiclePosition(Base):
 
     # This replaces the TripDescriptor message
     # TODO: figure out the relations
-    trip_id = Column(String(10))
-    route_id = Column(String(10))
+    trip_id = Column(String(64))
+    route_id = Column(String(64))
     trip_start_time = Column(String(8))
     trip_start_date = Column(String(10))
 
