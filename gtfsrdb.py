@@ -26,6 +26,7 @@ import datetime
 import time
 import sys
 from optparse import OptionParser
+import logging
 from urllib2 import urlopen
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -59,6 +60,9 @@ p.add_option('-w', '--wait', default=30, type='int', metavar='SECS',
 p.add_option('-v', '--verbose', default=False, dest='verbose',
              action='store_true', help='Print generated SQL')
 
+p.add_option('-q', '--quiet', default=False, dest='quiet',
+             action='store_true', help="Don't print warnings and status messages")
+
 p.add_option('-l', '--language', default='en', dest='lang', metavar='LANG',
              help='When multiple translations are available, prefer this language')
 
@@ -67,22 +71,37 @@ p.add_option('-1', '--once',  default=False, dest='once', action='store_true',
 
 opts, args = p.parse_args()
 
+if opts.quiet:
+    level = logging.ERROR
+elif opts.verbose:
+    level = logging.DEBUG
+else:
+    level = logging.WARNING
+
+# Set up a logger
+logger = logging.getLogger()
+logger.setLevel(level)
+loghandler = logging.StreamHandler(sys.stdout)
+logformatter = logging.Formatter(fmt='%(message)s')
+loghandler.setFormatter(logformatter)
+logger.addHandler(loghandler)
+
 if opts.dsn is None:
-    print 'No database specified!'
+    logging.error('No database specified!')
     exit(1)
 
 if opts.alerts is None and opts.tripUpdates is None and opts.vehiclePositions is None:
-    print 'No trip updates, alerts, or vehicle positions URLs were specified!'
+    logging.error('No trip updates, alerts, or vehicle positions URLs were specified!')
     exit(1)
 
 if opts.alerts is None:
-    print 'Warning: no alert URL specified, proceeding without alerts'
+    logging.warning('Warning: no alert URL specified, proceeding without alerts')
 
 if opts.tripUpdates is None:
-    print 'Warning: no trip update URL specified, proceeding without trip updates'
+    logging.warning('Warning: no trip update URL specified, proceeding without trip updates')
 
 if opts.vehiclePositions is None:
-    print 'Warning: no vehicle positions URL specified, proceeding without vehicle positions'
+    logging.warning('Warning: no vehicle positions URL specified, proceeding without vehicle positions')
 
 # Connect to the database
 engine = create_engine(opts.dsn, echo=opts.verbose)
@@ -94,10 +113,10 @@ session = sessionmaker(bind=engine)()
 for table in Base.metadata.tables.keys():
     if not engine.has_table(table):
         if opts.create:
-            print 'Creating table %s' % table
+            logging.info('Creating table %s', table)
             Base.metadata.tables[table].create(engine)
         else:
-            print 'Missing table %s! Use -c to create it.' % table
+            logging.error('Missing table %s! Use -c to create it.', table)
             exit(1)
 
 def getTrans(string, lang):
@@ -140,9 +159,9 @@ try:
 
                 # Check the feed version
                 if fm.header.gtfs_realtime_version != u'1.0':
-                    print 'Warning: feed version has changed: found %s, expected 1.0' % fm.header.gtfs_realtime_version
+                    logging.warning('Warning: feed version has changed: found %s, expected 1.0', fm.header.gtfs_realtime_version)
 
-                print 'Adding %s trip updates' % len(fm.entity)
+                logging.info('Adding %s trip updates', len(fm.entity))
                 for entity in fm.entity:
 
                     tu = entity.trip_update
@@ -196,9 +215,9 @@ try:
 
                 # Check the feed version
                 if fm.header.gtfs_realtime_version != u'1.0':
-                    print 'Warning: feed version has changed: found %s, expected 1.0' % fm.header.gtfs_realtime_version
+                    logging.warning('Warning: feed version has changed: found %s, expected 1.0', fm.header.gtfs_realtime_version)
 
-                    print 'Adding %s alerts' % len(fm.entity)
+                    logging.info('Adding %s alerts', len(fm.entity))
                     for entity in fm.entity:
                         alert = entity.alert
                         dbalert = Alert(
@@ -238,9 +257,9 @@ try:
 
                 # Check the feed version
                 if fm.header.gtfs_realtime_version != u'1.0':
-                    print 'Warning: feed version has changed: found %s, expected 1.0' % fm.header.gtfs_realtime_version
+                    logging.warning('Warning: feed version has changed: found %s, expected 1.0', fm.header.gtfs_realtime_version)
 
-                print 'Adding %s vehicle_positions' % len(fm.entity)
+                logging.info('Adding %s vehicle_positions', len(fm.entity))
                 for entity in fm.entity:
 
                     vp = entity.vehicle
@@ -268,19 +287,19 @@ try:
             session.commit()
         except:
             # else:
-            print 'Exception occurred in iteration'
-            print sys.exc_info()
+            logging.error('Exception occurred in iteration')
+            logging.error(sys.exc_info())
 
         # put this outside the try...except so it won't be skipped when something
         # fails
         # also, makes it easier to end the process with ctrl-c, b/c a
         # KeyboardInterrupt here will end the program (cleanly)
         if opts.once:
-            print "Executed the load ONCE ... going to stop now..."
+            logging.info("Executed the load ONCE ... going to stop now...")
             keep_running = False
         else:
             time.sleep(opts.timeout)
 
 finally:
-    print "Closing session . . ."
+    logging.info("Closing session . . .")
     session.close()
