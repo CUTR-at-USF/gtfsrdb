@@ -42,6 +42,7 @@ Base = declarative_base()
 # The oid is called oid because several of the GTFSr types have string ids
 # TODO: add sequences
 
+
 class TripUpdate(Base):
     __tablename__ = 'trip_updates'
     oid = Column(Integer, primary_key=True)
@@ -65,7 +66,8 @@ class TripUpdate(Base):
     timestamp = Column(DateTime)
 
     StopTimeUpdates = relationship('StopTimeUpdate', backref='TripUpdate')
-    
+
+
 class StopTimeUpdate(Base):
     __tablename__ = 'stop_time_updates'
     oid = Column(Integer, primary_key=True)
@@ -89,8 +91,9 @@ class StopTimeUpdate(Base):
 
     # Link it to the TripUpdate
     trip_update_id = Column(Integer, ForeignKey('trip_updates.oid'))
-    
+
     # The .TripUpdate is done by the backref in TripUpdate
+
 
 class Alert(Base):
     __tablename__ = 'alerts'
@@ -99,7 +102,7 @@ class Alert(Base):
 
     # Collapsed TimeRange
     start = Column(Integer)
-    end = Column(Integer)    
+    end = Column(Integer)
 
     # Add domain
     cause = Column(String(20))
@@ -110,6 +113,7 @@ class Alert(Base):
     description_text = Column(String(4000))
 
     InformedEntities = relationship('EntitySelector', backref='Alert')
+
 
 class EntitySelector(Base):
     __tablename__ = 'entity_selectors'
@@ -128,6 +132,7 @@ class EntitySelector(Base):
 
     alert_id = Column(Integer, ForeignKey('alerts.oid'))
 
+
 class VehiclePosition(Base):
     __tablename__ = 'vehicle_positions'
     oid = Column(Integer, primary_key=True)
@@ -138,12 +143,12 @@ class VehiclePosition(Base):
     route_id = Column(String(10))
     trip_start_time = Column(String(8))
     trip_start_date = Column(String(10))
- 
+
     # Collapsed VehicleDescriptor
     vehicle_id = Column(String(10))
     vehicle_label = Column(String(15))
     vehicle_license_plate = Column(String(10))
-    
+
     # Collapsed Position
     position_latitude = Column(Float)
     position_longitude = Column(Float)
@@ -154,7 +159,7 @@ class VehiclePosition(Base):
 
     # moved from the header, and reformatted as datetime
     timestamp = Column(DateTime)
-   
+
 
 # So one can loop over all classes to clear them for a new load (-o option)
 AllClasses = (TripUpdate, StopTimeUpdate, Alert, EntitySelector, VehiclePosition)
