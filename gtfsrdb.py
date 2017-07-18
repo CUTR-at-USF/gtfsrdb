@@ -72,6 +72,9 @@ p.add_option('-l', '--language', default='en', dest='lang', metavar='LANG',
 p.add_option('-1', '--once',  default=False, dest='once', action='store_true',
              help='only run the loader one time')
 
+p.add_option('-k', '--kill-after', default=0, dest='killAfter', type="int",
+             help='Kill after this many minutes')
+
 opts, args = p.parse_args()
 
 if opts.quiet:
@@ -138,9 +141,14 @@ def getTrans(string, lang):
             untranslated = t.text
     return untranslated
 
+if opts.killAfter > 0:
+    stop_time = datetime.datetime.now() + datetime.timedelta(minutes=opts.killAfter)
+
 try:
     keep_running = True
     while keep_running:
+        if datetime.datetime.now() > stop_time:
+            sys.exit()
         try:
             # if True:
             if opts.deleteOld:
