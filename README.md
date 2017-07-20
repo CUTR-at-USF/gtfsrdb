@@ -66,7 +66,9 @@ the plumbing to get the data in place.
 
 Other command line parameters:
 
+* `-1` = Only issue a request once
 * `-w` = Time to wait between requests (in seconds) (default=30s)
+* `-k` = Kill process after this many minutes
 * `-v` = Print generated SQL (verbose mode)
 * `-l` = When multiple translations are available, prefer this language
 

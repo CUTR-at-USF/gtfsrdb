@@ -57,8 +57,14 @@ p.add_option('-o', '--discard-old', default=False, dest='deleteOld',
 p.add_option('-c', '--create-tables', default=False, dest='create',
              action='store_true', help="Create tables if they aren't found")
 
+p.add_option('-1', '--once', default=False, dest='once', action='store_true',
+             help='Only issue a request once')
+
 p.add_option('-w', '--wait', default=30, type='int', metavar='SECS',
              dest='timeout', help='Time to wait between requests (in seconds)')
+
+p.add_option('-k', '--kill-after', default=0, dest='killAfter', type="float",
+             help='Kill process after this many minutes')
 
 p.add_option('-v', '--verbose', default=False, dest='verbose',
              action='store_true', help='Print generated SQL')
@@ -68,9 +74,6 @@ p.add_option('-q', '--quiet', default=False, dest='quiet',
 
 p.add_option('-l', '--language', default='en', dest='lang', metavar='LANG',
              help='When multiple translations are available, prefer this language')
-
-p.add_option('-1', '--once',  default=False, dest='once', action='store_true',
-             help='only run the loader one time')
 
 opts, args = p.parse_args()
 
@@ -138,9 +141,14 @@ def getTrans(string, lang):
             untranslated = t.text
     return untranslated
 
+if opts.killAfter > 0:
+    stop_time = datetime.datetime.now() + datetime.timedelta(minutes=opts.killAfter)
+
 try:
     keep_running = True
     while keep_running:
+        if datetime.datetime.now() > stop_time:
+            sys.exit()
         try:
             # if True:
             if opts.deleteOld:
