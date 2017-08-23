@@ -147,8 +147,9 @@ if opts.killAfter > 0:
 try:
     keep_running = True
     while keep_running:
-        if datetime.datetime.now() > stop_time:
-            sys.exit()
+        if opts.killAfter > 0:
+            if datetime.datetime.now() > stop_time:
+                sys.exit()
         try:
             # if True:
             if opts.deleteOld:
