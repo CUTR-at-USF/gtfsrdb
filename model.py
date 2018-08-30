@@ -59,7 +59,7 @@ class TripUpdate(Base):
 
     # Collapsed VehicleDescriptor
     vehicle_id = Column(String(10))
-    vehicle_label = Column(String(15))
+    vehicle_label = Column(String(255))
     vehicle_license_plate = Column(String(10))
 
     # moved from the header, and reformatted as datetime
@@ -146,7 +146,7 @@ class VehiclePosition(Base):
 
     # Collapsed VehicleDescriptor
     vehicle_id = Column(String(10))
-    vehicle_label = Column(String(15))
+    vehicle_label = Column(String(255))
     vehicle_license_plate = Column(String(10))
 
     # Collapsed Position
