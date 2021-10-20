@@ -58,7 +58,7 @@ class TripUpdate(Base):
     schedule_relationship = Column(String(9))
 
     # Collapsed VehicleDescriptor
-    vehicle_id = Column(String(10))
+    vehicle_id = Column(String(64))
     vehicle_label = Column(String(255))
     vehicle_license_plate = Column(String(10))
 
@@ -145,7 +145,7 @@ class VehiclePosition(Base):
     trip_start_date = Column(String(10))
 
     # Collapsed VehicleDescriptor
-    vehicle_id = Column(String(10))
+    vehicle_id = Column(String(64))
     vehicle_label = Column(String(255))
     vehicle_license_plate = Column(String(10))
 
