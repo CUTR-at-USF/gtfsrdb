@@ -31,7 +31,7 @@ try:
     from urllib2 import urlopen
 except ImportError:
     from urllib.request import urlopen
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, inspect
 from sqlalchemy.orm import sessionmaker
 import gtfs_realtime_pb2
 from model import *
@@ -111,13 +111,16 @@ if opts.vehiclePositions is None:
 
 # Connect to the database
 engine = create_engine(opts.dsn, echo=opts.verbose)
+
+# Create a database inspector
+insp = inspect(engine)
 # sessionmaker returns a class
 session = sessionmaker(bind=engine)()
 
 # Check if it has the tables
 # Base from model.py
 for table in Base.metadata.tables.keys():
-    if not engine.has_table(table):
+    if not insp.has_table(table):
         if opts.create:
             logging.info('Creating table %s', table)
             Base.metadata.tables[table].create(engine)
